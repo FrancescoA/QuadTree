@@ -7,6 +7,9 @@ import main.Node;
 import main.QuadTree;
 import main.QuadTreeException;
 import org.junit.Test;
+import org.junit.runner.JUnitCore;
+import org.junit.runner.Result;
+import org.junit.runner.notification.Failure;
 
 /**
  * Some QuadTree test cases. 
@@ -110,6 +113,15 @@ public class QuadTreeTest {
     QuadTree qt = getQuadTree();
     List<Node> allNodes = qt.getAllNodes();
     assertEquals(qt.getSize(), allNodes.size());
+  }
+  
+  public static void main(String[] args) {
+    System.out.println("Starting tests");
+    Result result = JUnitCore.runClasses(QuadTreeTest.class);
+    for (Failure failure : result.getFailures()) {
+      System.out.println(failure.toString());
+    }
+    System.out.println("Tests ended");
   }
   
 
