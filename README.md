@@ -29,7 +29,6 @@ From here you can run the QuadTree class file and see the output.
 ```
 $ cd bin
 $ java main.QuadTree
-
 ```
 Or you can also see the QuadTreeTest output results (there should not be any failures). 
 
