@@ -34,7 +34,7 @@ $ java main.QuadTree
 Or you can also see the QuadTreeTest output results (there should not be any failures). 
 
 ```
-$ java test.QuadTree
+$ java test.QuadTreeTest
 ```
 
 
