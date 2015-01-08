@@ -2,9 +2,10 @@ package test;
 
 import static org.junit.Assert.*;
 import java.awt.Rectangle;
+import java.util.Collections;
 import java.util.List;
-import main.Node;
-import main.QuadTree;
+import main.PointNode;
+import main.PointQuadTree;
 import main.QuadTreeException;
 import org.junit.Test;
 import org.junit.runner.JUnitCore;
@@ -18,29 +19,29 @@ import org.junit.runner.notification.Failure;
  */
 public class QuadTreeTest {
 
-  private QuadTree getQuadTree() {
-    QuadTree qt = new QuadTree(0,0,100,100);
-    Node[] nodes = {
-                    new Node(1,2),
-                    new Node(0,0),
-                    new Node(100,100),
-                    new Node(17,8),
-                    new Node(21,55),
-                    new Node(9,35),
-                    new Node(39,54),
-                    new Node(86,70),
-                    new Node(48,47),
-                    new Node(12,3),
-                    new Node(96,5),
-                    new Node(53,35),
-                    new Node(9,32),
-                    new Node(39,30),
-                    new Node(85,0),
-                    new Node(70,83),
-                    new Node(57,44),
-                    new Node(7,32),
-                    new Node(23,89),
-                    new Node(53,81),
+  private PointQuadTree getQuadTree() {
+    PointQuadTree qt = new PointQuadTree(0,0,100,100);
+    PointNode[] nodes = {
+                    new PointNode(1,2),
+                    new PointNode(0,0),
+                    new PointNode(100,100),
+                    new PointNode(17,8),
+                    new PointNode(21,55),
+                    new PointNode(9,35),
+                    new PointNode(39,54),
+                    new PointNode(86,70),
+                    new PointNode(48,47),
+                    new PointNode(12,3),
+                    new PointNode(96,5),
+                    new PointNode(53,35),
+                    new PointNode(9,32),
+                    new PointNode(39,30),
+                    new PointNode(85,0),
+                    new PointNode(70,83),
+                    new PointNode(57,44),
+                    new PointNode(7,32),
+                    new PointNode(23,89),
+                    new PointNode(53,81),
                     };
     qt.insertAll(nodes);
     return qt;
@@ -49,16 +50,16 @@ public class QuadTreeTest {
   
   @Test(expected = QuadTreeException.class)
   public void testOutOfBoundEntry() {
-    QuadTree qt = new QuadTree(0,0,100,100);
-    Node n = new Node(101,101);
+    PointQuadTree qt = new PointQuadTree(0,0,100,100);
+    PointNode n = new PointNode(101,101);
     qt.insert(n);
   }
   
   @Test
   public void shouldNotInsertDuplicates() {
-    QuadTree qt = new QuadTree(0,0,100,100);
-    Node n1 = new Node(1,1);
-    Node n2 = new Node(1,1);
+    PointQuadTree qt = new PointQuadTree(0,0,100,100);
+    PointNode n1 = new PointNode(1,1);
+    PointNode n2 = new PointNode(1,1);
     qt.insert(n1);
     qt.insert(n2);
     assertEquals(1,qt.getSize());
@@ -66,54 +67,77 @@ public class QuadTreeTest {
   
   @Test
   public void shouldNotGiveOutOfBoundException() {
-    QuadTree qt = new QuadTree(0,0,100,100);
-    Node n = new Node(0,0);
+    PointQuadTree qt = new PointQuadTree(0,0,100,100);
+    PointNode n = new PointNode(0,0);
     qt.insert(n);
   }
   
   @Test
   public void shouldNotGiveOutOfBoundException2() {
-    QuadTree qt = new QuadTree(0,0,100,100);
-    Node n = new Node(100,100);
+    PointQuadTree qt = new PointQuadTree(0,0,100,100);
+    PointNode n = new PointNode(100,100);
     qt.insert(n);
   }
   
   @Test 
   public void shouldNotGiveOutOfBoundException3() {
-    QuadTree qt = new QuadTree(0,0,100,100);
-    Node n = new Node(0,100);
+    PointQuadTree qt = new PointQuadTree(0,0,100,100);
+    PointNode n = new PointNode(0,100);
     qt.insert(n);
   }
   
   @Test 
   public void shouldNotGiveOutOfBoundException4() {
-    QuadTree qt = new QuadTree(0,0,100,100);
-    Node n = new Node(100,0);
+    PointQuadTree qt = new PointQuadTree(0,0,100,100);
+    PointNode n = new PointNode(100,0);
     qt.insert(n);
   }
   
   @Test
   public void testQuery() {
-    QuadTree qt = getQuadTree();
+    PointQuadTree qt = getQuadTree();
     Rectangle query = new Rectangle(10,10);
-    List<Node> results = qt.queryRange(query);
+    List<PointNode> results = qt.queryRange(query);
     assertEquals("[(1, 2), (0, 0)]",results.toString());
   }
   
   @Test
   public void testQuery2() {
-    QuadTree qt = getQuadTree();
+    PointQuadTree qt = getQuadTree();
     Rectangle query = new Rectangle(50,70);
-    List<Node> results = qt.queryRange(query);
-    assertEquals("[(1, 2), (17, 8), (21, 55), (39, 54), (48, 47), (39, 30), (9, 35), (9, 32), (7, 32), (12, 3), (0, 0)]",results.toString());
+    List<PointNode> results = qt.queryRange(query);
+    assertEquals("[(1, 2), (0, 0), (17, 8), (12, 3), (9, 35), (9, 32), (7, 32), (21, 55), (39, 54), (39, 30), (48, 47)]",results.toString());
+  }
+  
+  @Test 
+  public void comapareQueries() {
+    PointQuadTree qt = getQuadTree();
+    Rectangle query = new Rectangle(50,70);
+    List<PointNode> results = qt.queryRange(query);
+    List<PointNode> results2 = qt.innefficientQueryRange(query);
+    Collections.sort(results);
+    Collections.sort(results2);
+    assertEquals(results.toString(), results2.toString());
+  }
+  
+  @Test
+  public void testEfficiency() {
+    PointQuadTree qt = getQuadTree();
+    Rectangle query = new Rectangle(30,30);
+    qt.queryRange(query);
+    int queryOneVisits = qt.getVisitedOnLastSearch();
+    qt.innefficientQueryRange(query);
+    int queryTwoVisits = qt.getVisitedOnLastSearch();
+    assertEquals(true, queryOneVisits < queryTwoVisits);
   }
   
   @Test
   public void testQueryAll() {
-    QuadTree qt = getQuadTree();
-    List<Node> allNodes = qt.getAllNodes();
+    PointQuadTree qt = getQuadTree();
+    List<PointNode> allNodes = qt.getAllNodes();
     assertEquals(qt.getSize(), allNodes.size());
   }
+  
   
   public static void main(String[] args) {
     System.out.println("Starting tests");
