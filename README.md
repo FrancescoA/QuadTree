@@ -1,7 +1,7 @@
 QuadTree
 ========
 
-A QuadTree Implementation written in Java.
+A PointQuadTree Implementation written in Java.
 
 Usage
 -----
@@ -28,7 +28,7 @@ $ javac -d bin -classpath .: src/*/*.java
 From here you can run the QuadTree class file and see the output. 
 ```
 $ cd bin
-$ java main.QuadTree
+$ java main.PointQuadTree
 ```
 Or you can also see the QuadTreeTest output results (there should not be any failures). 
 
@@ -43,23 +43,24 @@ Example
 ```java
   public static void main (String[] args) {
     //Demonstration
-    QuadTree st = new QuadTree(new Rectangle(0,0,100,100));
-    int N = 200;
-    Rectangle queryRect = new Rectangle(50,50,100,100);
+    PointQuadTree st = new PointQuadTree(new Rectangle(0,0,100,100));
+    int N = 10000;
+    Rectangle queryRect = new Rectangle(50,50,50,50);
     for (int i = 0; i < N; i++) {
         Integer x = (int) (100 * Math.random());
         Integer y = (int) (100 * Math.random());
         Point loc = new Point(x,y);
-        Node n = new Node(loc, "P"+i);
+        PointNode n = new PointNode(loc, "P"+i);
         System.out.println("Inserting node: "+n);
         st.insert(n);
     }
     System.out.println("Done preprocessing " + N + " points");
-    List<Node> results = st.queryRange(queryRect);
+    List<PointNode> results = st.queryRange(queryRect);
     System.out.println("QT has " + st.size + " unique nodes");
     System.out.println("Queried a range: "+ queryRect);
     System.out.println("And found: "+ results.size() + " results:");
     System.out.println(results);
+    System.out.println("By searching: " + st.getVisitedOnLastSearch() + "nodes");
   }
 
 ```
